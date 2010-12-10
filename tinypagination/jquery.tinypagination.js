@@ -1,28 +1,26 @@
 /**
  * www.we3ew.com
+ * $("#abc").tinypagination({});
  * 
- *$(".paginationsClass").tinypagination({
- *		changeHandler:function change(page){
- *			alert(page);
- *		},
- *		total: 100,//比设置选项，其他参数可选
- *		currentPage: 5,
- *		perPage: 5, 
- *      prevText: '前一页', //默认为“上一页”可不设置
- *      nextText: '后一页',
- *		mode:"ajax", //or "nomal"
- *		pageUrl:"index.php?page="
- *	});
+ * <div class="pagination">
+ *   <span class="prev disabled">上一页</spa>
+ *   <a class= "prev" href="#page_prev">上一页</a>
+ *   <a href="#page_1">1</a>
+ *   <span class="current">2</span>
+ *   <a href="#page_2">2</a>
+ *   <a href="#page_3">3</a>
+ *   <a href="#page_4">4</a>
+ *   <a href="#page_4">5</a>
+ *   <span class="next disabled">下一页</spa>
+ *   <a class= "next" href="#page_next">下一页</a>
+ * </div>
  * 
- *	<div class="paginationsClass">第一个</div>
- *	<div class="paginationsClass">第二个</div>
- *	<div class="paginationsClass">第三个</div>
  */
 
 (function($) {
 			
 	function makeUrl(options,currentPage){
-		return 'href="'+ (options.mode=='ajax'?'#page_': options.pageUrl)+currentPage+'" ';
+		return  'href="'+ (options.mode=='ajax'?('#page_'+currentPage): (options['url']+currentPage))+'" ';
 	}
 	
 	function calculatePagesLinks(options){
@@ -77,8 +75,8 @@
 		return result;
 	}
 	
-	function creatHrefHtml(className,urlHref,hrefText){
-		return '<a class="'+className+'" '+ urlHref +' >'+hrefText+'</a> ';
+	function creatHrefHtml(className,url,hrefText){
+		return '<a class="'+className+'" '+ url +' >'+hrefText+'</a> ';
 	}
 	
 	function initPaginationHtml(options){
@@ -132,13 +130,13 @@
             },options); 
 		    
 	        var thisList = this;
-
+	        
 	        return this.each(function() {
 	    		var $this =$(this); 
 	    		initPagination(options.currentPage);
-
+	    		
 	    		$(this).find('.'+ options.containerClass).live('click',function(e){
-	    			if(checkClick($(e.target)) && options.mode=='ajax'){
+	    			if(checkClick($(e.target))){
     					initPagination(getCurrentPage($(e.target)));
 	    			}
 	    			return true;
@@ -164,12 +162,15 @@
 	    		}
 	    		
 	    		function initPagination(currentPage){
-	    			options.currentPage=currentPage;
-	    			var html = initPaginationHtml(options);
-    				thisList.each(function() {
-    					$(this).empty().html(html);
-    				});
-	    			return options.changeHandler.call($(this),options.currentPage);
+	    			if(options.mode=='ajax'){
+		    			options.currentPage=currentPage;
+		    			var html = initPaginationHtml(options);
+	    				thisList.each(function() {
+	    					$(this).empty().html(html);
+	    				});
+		    			return options.changeHandler.call($(this),options.currentPage);
+	    			}
+	    			return true;
 	    		}
 	    		
 	    		function countCurrentPage(type){

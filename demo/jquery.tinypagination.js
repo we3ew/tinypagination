@@ -167,7 +167,9 @@
 	    		}
 	    		
 	    		function initPagination(currentPage){
-	    			if(options.total==0){return false;}
+	    			if(options.total <= options.perPage){
+	    				return false;
+	    			}
 	    			options.currentPage=currentPage;
 	    			var html = initPaginationHtml(options);
     				thisList.each(function() {

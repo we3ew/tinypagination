@@ -145,6 +145,9 @@
 	    		});
 
 	    		function checkClick($target){
+	    			if($target.attr('tagName')!='A'){
+	    				return false;
+	    			}
 	    			if($target.hasClass(options.prevClass) || $target.hasClass(options.nextClass) || $target.hasClass(options.linksClass)){
 	    				return true;
 	    			}
@@ -164,6 +167,7 @@
 	    		}
 	    		
 	    		function initPagination(currentPage){
+	    			if(options.total==0){return false;}
 	    			options.currentPage=currentPage;
 	    			var html = initPaginationHtml(options);
     				thisList.each(function() {

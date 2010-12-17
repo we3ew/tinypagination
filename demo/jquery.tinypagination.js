@@ -167,6 +167,7 @@
 	    		}
 	    		
 	    		function initPagination(currentPage){
+	    			options.changeHandler.call($(this),currentPage)
 	    			if(options.total <= options.perPage){
 	    				return false;
 	    			}
@@ -175,7 +176,7 @@
     				thisList.each(function() {
     					$(this).empty().html(html);
     				});
-	    			return options.changeHandler.call($(this),options.currentPage);
+	    			return true;
 	    		}
 	    		
 	    		function countCurrentPage(type){

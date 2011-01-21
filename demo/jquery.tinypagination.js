@@ -123,12 +123,12 @@
             	nextText: '下一页',
             	total: 0,
             	perPage: 10,
-            	currentPage: 2,
+            	currentPage: 1,
             	frontRange: 3,
             	backRange: 3,
             	changeHandler: function(page){},
             	mode: "ajax", // normal
-            	pageUrl: "",
+            	pageUrl: ""
             },options); 
 		    
 	        var thisList = this;

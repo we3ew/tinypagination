@@ -44,10 +44,14 @@
 		if(options.backRange>1){
 			if((pageNum['lastPage']-options.currentPage) >= options.backRange){
 				var backRangeNum = options.backRange;
-				if(options.currentPage<=options.frontRange && (pageNum['lastPage']-options.frontRange-options.backRange)>=0)
-					backRangeNum +=  options.frontRange - options.currentPage + 1;
-
-				for(var i=0;i<options.backRange;i++){
+				if(options.currentPage<=options.frontRange && (pageNum['lastPage']-options.frontRange-options.backRange)>=0){
+					if(pageNum['lastPage']-options.frontRange-options.backRange>0)
+						backRangeNum +=  options.frontRange - options.currentPage + 1;
+					else
+						backRangeNum +=  options.frontRange - options.currentPage;
+				}
+					
+				for(var i=0;i<backRangeNum;i++){
 					back[i]=options.currentPage+i+1;
 				}					
 			}else if((pageNum['lastPage']-options.currentPage) < options.backRange && pageNum['lastPage']>options.currentPage){

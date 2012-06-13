@@ -11,7 +11,9 @@
  *      prevText: '前一页', //默认为“上一页”可不设置
  *      nextText: '后一页',
  *		mode:"ajax", //or "nomal"
- *		pageUrl:"index.php?page="
+ *		pageUrl:"index.php?page=",
+ *		buttonHtmlTag='span';
+ *		pagerHtmlTag='span';
  *	});
  * 
  *	<div class="paginationsClass">第一个</div>
@@ -23,6 +25,20 @@
 			
 	function makeUrl(options,currentPage){
 		return 'href="'+ (options.mode=='ajax'?'#page_': options.pageUrl)+currentPage+'" ';
+	}
+	
+	function replacePage(url){
+		url = url.replace(/\?page=[0-9]{0,11}\&/,'?');
+		url = url.replace(/\&page=[0-9]{1,11}\&/,'&');
+		url = url.replace(/page=[0-9]{1,11}\&/,'&');
+		url = url.replace(/\&page=[0-9]{1,11}/,'');
+		url = url.replace(/\?page=[0-9]{1,11}/,'');
+		url = url.replace(/\?page=$/,'');
+		url = url.replace(/\&page=$/,'');
+		url = url.replace(/\&\&/,'&');
+		if(url.indexOf('?')<0)
+			return url+'?page=';
+		return url.indexOf('page=')<0?url+'&page=':url;
 	}
 	
 	function calculatePagesLinks(options){
@@ -92,7 +108,9 @@
 	function initPaginationHtml(options){
 			var pageNum = calculatePagesNum(options.total, options.currentPage, options.perPage);
 			var pageLinks = calculatePagesLinks(options);
-			var html = '<div class="'+options['containerClass']+'"> ';
+			var html = '<div class="'+options['containerClass']+'"><span>共 '+pageNum['lastPage']+' 页,'+options.total+' 条</span> ';
+			//首页
+				html+= creatHrefHtml(options.startClass, makeUrl(options,1) ,options.startText);
 			// 前一页
 			if(pageNum['prev']==1 && pageNum['currentPage']==1){
 				html+= '<span  class="'+options.prevClass+'" >'+options.prevText+'</span> ';
@@ -115,6 +133,8 @@
 			}else{
 				html+= creatHrefHtml(options.nextClass, makeUrl(options,pageNum['next']) ,options.nextText);
 			}
+			//尾页
+				html+= creatHrefHtml(options.endClass, makeUrl(options,pageNum['lastPage']) ,options.endText);
 				html+= '</div>';
 			return html;
 	}
@@ -122,13 +142,17 @@
 	$.fn.tinypagination = function(options){
 	        var options = $.extend({
             	containerClass: 'pagination',
+            	startClass: 'start',
+            	endClass: 'end',
             	prevClass: 'prev',
             	nextClass: 'next',
             	disabledClass: 'disabled',
             	currentClass: 'current',
             	linksClass: 'links',
+            	startText: '首页',
             	prevText: '上一页',
             	nextText: '下一页',
+            	endText: '尾页',
             	total: 0,
             	perPage: 10,
             	currentPage: 1,
@@ -136,9 +160,13 @@
             	backRange: 3,
             	changeHandler: function(page){},
             	mode: "ajax", // normal
-            	pageUrl: ""
+            	pageUrl: window.location.href
             },options); 
-		    
+
+			var pageUrl = options.pageUrl;
+			options.pageUrl = pageUrl.indexOf('?')<0?(pageUrl+'?page='):
+				(pageUrl.indexOf('page=')<0?(pageUrl+'&page='):replacePage(pageUrl));
+			
 	        var thisList = this;
 
 	        return this.each(function() {
